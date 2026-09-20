@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ExamYatra - तैयारी का सही रास्ता | PRT 20 Mocks</title>
+<link rel="icon" href="logo.png">
+<style>body{margin:0;font-family:system-ui;background:#FFFBF0;color:#1a3c34}
+header{background:#fff;display:flex;justify-content:space-between;align-items:center;padding:10px 20px;box-shadow:0 2px 10px rgba(0,0,0,.08);position:sticky;top:0}
+.logo-area{display:flex;align-items:center;gap:10px} .logo-area img{height:50px;border-radius:50%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;max-width:1000px;margin:15px auto;padding:10px}
+.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);text-align:center;border:2px solid #ddd}
+.card.active{border-color:#b78a4a} .card button{background:#1a3c34;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer}
+</style></head><body>
+<header><div class="logo-area"><img src="logo.png"><div><b>Exam<span style="color:#b78a4a">Yatra</span></b><br><small>तैयारी का सही रास्ता</small></div></div><div>PRT 2025</div></header>
+<div style="text-align:center;padding:20px"><h1>UP PRT SuperTET - 20 Free Mocks</h1><p>ExamYatra pe sabhi mocks free</p></div>
+<div class="grid" id="grid"></div>
+<script>for(let i=1;i<=20;i++){let d=document.createElement('div');d.className='card'+(i<=3?' active':'');d.innerHTML=`<h3>PRT Mock ${i}</h3><p>${i<=3?'✅ 150Q Ready':'🔜 Soon'}</p><button onclick="localStorage.setItem('mock',${i});location.href='test.html'">${i<=3?'Start Now':'Preview'}</button>`;document.getElementById('grid').appendChild(d);}</script>
+</body></html>
