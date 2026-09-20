@@ -23,6 +23,7 @@
 .legend{font-size:12px;color:#666;margin-top:10px;display:flex;gap:12px}
 .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
 @media(max-width:850px){.wrap{flex-direction:column}.right{width:100%;order:2}.left{order:1}}
+<script src="data.js"></script>
 </style></head><body>
 <div class="top"><div style="display:flex;align-items:center;gap:10px"><img src="logo.png" style="width:34px;height:34px;border-radius:50%;background:#fff"><b>ExamYatra PRT Mock</b></div><div style="display:flex;align-items:center;gap:10px"><span class="timer" id="timer">150:00</span><button class="btn btn-gold" onclick="submitTest()">Submit</button></div></div>
 <div class="wrap"><div class="card left"><div class="qcount" id="qcount"></div><div class="qtitle" id="qbox"></div><div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-light" onclick="go(idx-1)">← Previous</button><button class="btn btn-gold" onclick="go(idx+1)">Save & Next →</button></div></div>
