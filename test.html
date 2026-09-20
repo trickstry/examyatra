@@ -1,10 +1,29 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ExamYatra Mock</title><style>body{margin:0;font-family:system-ui;background:#FFFBF0}#top{background:#1a3c34;color:#fff;padding:12px;display:flex;justify-content:space-between}#quiz{max-width:800px;margin:20px auto;background:#fff;padding:20px;border-radius:12px}.opt{border:1px solid #ddd;padding:10px;margin:8px 0;border-radius:8px;cursor:pointer}.sel{background:#1a3c34;color:#fff}</style></head><body>
-<div id="top"><b id="title">ExamYatra</b><span id="timer">150:00</span></div><div id="quiz"><div id="qbox">Loading...</div><button id="next" style="background:#b78a4a;color:#fff;border:none;padding:10px 20px;border-radius:6px">Next</button><div id="res" style="display:none"></div></div>
+<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ExamYatra Mock Test</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f5f1e8}
+#top{background:#1a3c34;color:#fff;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+#main{display:flex;max-width:1200px;margin:0 auto}
+#left{flex:1;background:#fff;margin:10px;padding:20px;border-radius:10px;min-height:80vh}
+#right{width:260px;background:#fff;margin:10px 10px 10px 0;padding:15px;border-radius:10px;height:fit-content}
+.opt{border:1.5px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer}
+.opt.sel{background:#1a3c34;color:#fff;border-color:#1a3c34}
+.qbtn{width:32px;height:32px;margin:4px;border:1px solid #ccc;border-radius:6px;cursor:pointer;background:#fff}
+.qbtn.attempt{background:#1a3c34;color:#fff}
+.qbtn.active{border:2px solid #b78a4a}
+#timer{font-weight:bold;background:#b78a4a;padding:5px 12px;border-radius:20px}
+</style></head><body>
+<div id="top"><div><img src="logo.png" style="height:28px;vertical-align:middle;border-radius:50%"> <b id="title">ExamYatra</b></div><div><span id="timer">150:00</span> <button onclick="submitTest()" style="margin-left:10px;background:#fff;color:#1a3c34;border:none;padding:6px 12px;border-radius:6px">Submit</button></div></div>
+<div id="main"><div id="left"><div id="qbox">Loading questions...</div><div style="margin-top:20px"><button onclick="prev()" style="padding:8px 16px">Previous</button> <button onclick="next()" style="padding:8px 16px;background:#b78a4a;color:#fff;border:none;border-radius:6px">Save & Next</button></div></div>
+<div id="right"><h4 style="margin:0 0 10px">Questions: <span id="count">0/0</span></h4><div id="palette"></div><div id="result" style="display:none;margin-top:15px"></div></div></div>
 <script>
-let mockNo=localStorage.getItem('mock')||1;
-document.getElementById('title').innerText='ExamYatra - PRT Mock '+mockNo;
-let qs=[], idx=0, ans={};
-fetch('data/mock'+mockNo+'.json').then(r=>r.json()).then(data=>{qs=data; show();}).catch(()=>{document.getElementById('qbox').innerHTML='Questions abhi add nahi hue. <a href=index.html>Back</a>'});
-function show(){let q=qs[idx]; if(!q)return; document.getElementById('qbox').innerHTML=`<b>Q${idx+1}. ${q.question}</b>`+q.options.map((o,i)=>`<div class='opt ${ans[idx]==i?'sel':''}' onclick='ans[${idx}]=${i};show()'>${String.fromCharCode(65+i)}. ${o}</div>`).join('');}
-document.getElementById('next').onclick=()=>{if(idx<qs.length-1){idx++;show()}else{let s=0;qs.forEach((q,i)=>{if(ans[i]==q.answer)s++});document.getElementById('qbox').innerHTML='';document.getElementById('res').style.display='block';document.getElementById('res').innerHTML=`<h2>Score: ${s}/${qs.length}</h2><a href='index.html'>Back to Home</a>`;document.getElementById('next').style.display='none'}};
+let mockNo=localStorage.getItem('mock')||1, qs=[], idx=0, ans={}, time=150*60;
+document.getElementById('title').innerText='PRT Mock '+mockNo;
+fetch('data/mock'+mockNo+'.json').then(r=>r.json()).then(d=>{qs=d; if(qs.length==0) qs=[{question:"Demo Q: बालक का प्रथम गुरु?",options:["माता","पिता","शिक्षक","समाज"],answer:0}]; init();}).catch(()=>{qs=[{question:"Demo Q: NEP 2020 कब आई?",options:["2020","2019","2021","2022"],answer:0}]; init();});
+function init(){document.getElementById('count').innerText=qs.length+' Qs'; renderPalette(); show(); startTimer();}
+function renderPalette(){let h='';qs.forEach((_,i)=>{h+=`<button class="qbtn ${ans[i]!=undefined?'attempt':''} ${i==idx?'active':''}" onclick="go(${i})">${i+1}</button>`});document.getElementById('palette').innerHTML=h;}
+function show(){let q=qs[idx]; if(!q)return; document.getElementById('qbox').innerHTML=`<div style="color:#b78a4a">Question ${idx+1} of ${qs.length}</div><h3>${q.question}</h3>`+q.options.map((o,i)=>`<div class="opt ${ans[idx]==i?'sel':''}" onclick="ans[${idx}]=${i}; renderPalette(); show()">${String.fromCharCode(65+i)}. ${o}</div>`).join(''); renderPalette();}
+function go(i){idx=i; show()} function next(){if(idx<qs.length-1){idx++;show()}} function prev(){if(idx>0){idx--;show()}}
+function startTimer(){setInterval(()=>{time--; let m=Math.floor(time/60), s=time%60; document.getElementById('timer').innerText=`${m}:${s<10?'0':''}${s}`; if(time<=0)submitTest();},1000);}
+function submitTest(){let score=0; qs.forEach((q,i)=>{if(ans[i]==q.answer)score++}); document.getElementById('result').style.display='block'; document.getElementById('result').innerHTML=`<h3>Result: ${score}/${qs.length}</h3><p>Accuracy: ${Math.round(score/qs.length*100)}%</p><a href="index.html">Back Home</a>`; window.scrollTo(0,0);}
 </script></body></html>
