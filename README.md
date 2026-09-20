@@ -1,0 +1,5 @@
+# ExamYatra - PRT 20 Free Mocks
+Live: https://examyatra.netlify.app
+- 20 Full Mocks - Latest Pattern
+- Logo: ExamYatra - तैयारी का सही रास्ता
+- Owner: trickstry@gmail.com
