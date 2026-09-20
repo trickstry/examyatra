@@ -1,29 +1,32 @@
-<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ExamYatra Mock Test</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f5f1e8}
-#top{background:#1a3c34;color:#fff;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-#main{display:flex;max-width:1200px;margin:0 auto}
-#left{flex:1;background:#fff;margin:10px;padding:20px;border-radius:10px;min-height:80vh}
-#right{width:260px;background:#fff;margin:10px 10px 10px 0;padding:15px;border-radius:10px;height:fit-content}
+<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ExamYatra Mock</title>
+<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f5f1e8}
+#top{background:#1a3c34;color:#fff;padding:10px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
+#main{display:flex;flex-wrap:wrap;max-width:1100px;margin:auto}
+#left{flex:1;min-width:300px;background:#fff;margin:8px;padding:16px;border-radius:10px}
+#right{width:100%;max-width:320px;background:#fff;margin:8px;padding:12px;border-radius:10px}
 .opt{border:1.5px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer}
-.opt.sel{background:#1a3c34;color:#fff;border-color:#1a3c34}
-.qbtn{width:32px;height:32px;margin:4px;border:1px solid #ccc;border-radius:6px;cursor:pointer;background:#fff}
+.opt.sel{background:#1a3c34;color:#fff}
+.qbtn{width:36px;height:36px;margin:4px;border:1px solid #ccc;border-radius:6px;background:#fff}
 .qbtn.attempt{background:#1a3c34;color:#fff}
 .qbtn.active{border:2px solid #b78a4a}
-#timer{font-weight:bold;background:#b78a4a;padding:5px 12px;border-radius:20px}
+@media(max-width:700px){#main{flex-direction:column}#right{max-width:100%;order:-1}#right #palette{max-height:80px;overflow:auto}}
+#timer{background:#b78a4a;padding:5px 10px;border-radius:20px;font-weight:bold}
 </style></head><body>
-<div id="top"><div><img src="logo.png" style="height:28px;vertical-align:middle;border-radius:50%"> <b id="title">ExamYatra</b></div><div><span id="timer">150:00</span> <button onclick="submitTest()" style="margin-left:10px;background:#fff;color:#1a3c34;border:none;padding:6px 12px;border-radius:6px">Submit</button></div></div>
-<div id="main"><div id="left"><div id="qbox">Loading questions...</div><div style="margin-top:20px"><button onclick="prev()" style="padding:8px 16px">Previous</button> <button onclick="next()" style="padding:8px 16px;background:#b78a4a;color:#fff;border:none;border-radius:6px">Save & Next</button></div></div>
-<div id="right"><h4 style="margin:0 0 10px">Questions: <span id="count">0/0</span></h4><div id="palette"></div><div id="result" style="display:none;margin-top:15px"></div></div></div>
+<div id="top"><div><img src="logo.png" style="height:26px;border-radius:50%;vertical-align:middle"> <b id="title">PRT Mock</b></div><div><span id="timer">150:00</span> <button onclick="submitTest()" style="margin-left:8px;background:#fff;color:#1a3c34;border:none;padding:6px 12px;border-radius:6px">Submit</button></div></div>
+<div id="main"><div id="left"><div style="color:#b78a4a;font-size:14px" id="qcount"></div><div id="qbox">Loading...</div><div style="margin-top:15px"><button onclick="prev()">Previous</button> <button onclick="next()" style="background:#b78a4a;color:#fff;border:none;padding:8px 16px;border-radius:6px;margin-left:8px">Save & Next</button></div></div>
+<div id="right"><b>Questions: <span id="total"></span></b><div id="palette" style="margin-top:8px"></div><div id="result" style="display:none;margin-top:15px"></div></div></div>
 <script>
-let mockNo=localStorage.getItem('mock')||1, qs=[], idx=0, ans={}, time=150*60;
+let mockNo=localStorage.getItem('mock')||2, qs=[], idx=0, ans={}, time=150*60;
 document.getElementById('title').innerText='PRT Mock '+mockNo;
-fetch('data/mock'+mockNo+'.json').then(r=>r.json()).then(d=>{qs=d; if(qs.length==0) qs=[{question:"Demo Q: बालक का प्रथम गुरु?",options:["माता","पिता","शिक्षक","समाज"],answer:0}]; init();}).catch(()=>{qs=[{question:"Demo Q: NEP 2020 कब आई?",options:["2020","2019","2021","2022"],answer:0}]; init();});
-function init(){document.getElementById('count').innerText=qs.length+' Qs'; renderPalette(); show(); startTimer();}
-function renderPalette(){let h='';qs.forEach((_,i)=>{h+=`<button class="qbtn ${ans[i]!=undefined?'attempt':''} ${i==idx?'active':''}" onclick="go(${i})">${i+1}</button>`});document.getElementById('palette').innerHTML=h;}
-function show(){let q=qs[idx]; if(!q)return; document.getElementById('qbox').innerHTML=`<div style="color:#b78a4a">Question ${idx+1} of ${qs.length}</div><h3>${q.question}</h3>`+q.options.map((o,i)=>`<div class="opt ${ans[idx]==i?'sel':''}" onclick="ans[${idx}]=${i}; renderPalette(); show()">${String.fromCharCode(65+i)}. ${o}</div>`).join(''); renderPalette();}
-function go(i){idx=i; show()} function next(){if(idx<qs.length-1){idx++;show()}} function prev(){if(idx>0){idx--;show()}}
-function startTimer(){setInterval(()=>{time--; let m=Math.floor(time/60), s=time%60; document.getElementById('timer').innerText=`${m}:${s<10?'0':''}${s}`; if(time<=0)submitTest();},1000);}
-function submitTest(){let score=0; qs.forEach((q,i)=>{if(ans[i]==q.answer)score++}); document.getElementById('result').style.display='block'; document.getElementById('result').innerHTML=`<h3>Result: ${score}/${qs.length}</h3><p>Accuracy: ${Math.round(score/qs.length*100)}%</p><a href="index.html">Back Home</a>`; window.scrollTo(0,0);}
+fetch('data/mock'+mockNo+'.json').then(r=>r.json()).then(d=>{qs=d; if(!qs || qs.length<5) throw 'empty'; init();}).catch(()=>{
+  // Fallback: agar file khali hai to 150 demo Q generate karo
+  qs=[]; for(let i=1;i<=150;i++){qs.push({question:`Q${i}: NEP 2020 कब लागू हुई? (Mock ${mockNo})`,options:["2020","2019","2021","2022"],answer:0})}
+  init();
+});
+function init(){document.getElementById('total').innerText=qs.length; render(); show(); startTimer();}
+function render(){let h=''; qs.forEach((_,i)=>{h+=`<button class="qbtn ${ans[i]!=undefined?'attempt':''} ${i==idx?'active':''}" onclick="go(${i})">${i+1}</button>`}); document.getElementById('palette').innerHTML=h;}
+function show(){let q=qs[idx]; document.getElementById('qcount').innerText=`Question ${idx+1} of ${qs.length}`; document.getElementById('qbox').innerHTML=`<h3>${q.question}</h3>`+q.options.map((o,i)=>`<div class="opt ${ans[idx]==i?'sel':''}" onclick="ans[${idx}]=${i};render();show()">${String.fromCharCode(65+i)}. ${o}</div>`).join(''); render();}
+function go(i){idx=i;show()} function next(){if(idx<qs.length-1){idx++;show()}} function prev(){if(idx>0){idx--;show()}}
+function startTimer(){setInterval(()=>{time--; let m=Math.floor(time/60),s=time%60; document.getElementById('timer').innerText=`${m}:${s<10?'0':''}${s}`; if(time<=0)submitTest();},1000);}
+function submitTest(){let sc=0; qs.forEach((q,i)=>{if(ans[i]==q.answer)sc++}); document.getElementById('result').style.display='block'; document.getElementById('result').innerHTML=`<h3>Score: ${sc}/${qs.length}</h3><p>${Math.round(sc/qs.length*100)}% Correct</p><a href="index.html">Home</a>`;}
 </script></body></html>
