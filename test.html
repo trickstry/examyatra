@@ -1,53 +1,61 @@
-<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ExamYatra Mock</title>
-<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f5f1e8}
-#top{background:#1a3c34;color:#fff;padding:10px;display:flex;justify-content:space-between;position:sticky;top:0}
-#main{max-width:1100px;margin:auto;display:flex;flex-wrap:wrap}
-#left{flex:1;min-width:300px;background:#fff;margin:8px;padding:16px;border-radius:12px}
-#right{width:320px;background:#fff;margin:8px;padding:12px;border-radius:12px}
-@media(max-width:700px){#main{flex-direction:column}#right{width:100%;order:-1}}
-.opt{border:1.5px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer}
-.opt.sel{background:#1a3c34;color:#fff;border-color:#1a3c34}
-.qbtn{width:36px;height:36px;margin:4px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer}
-.qbtn.done{background:#1a3c34;color:#fff}.qbtn.active{border:2px solid #b78a4a}
+<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ExamYatra - PRT Mock</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',system-ui;background:#f8f5ee;color:#1a1a1a}
+.top{position:sticky;top:0;z-index:10;background:#122e28;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.top b{font-size:16px}.timer{background:linear-gradient(135deg,#c9a86a,#a8824a);padding:7px 14px;border-radius:24px;font-weight:700;color:#1a1a1a}
+.wrap{max-width:1250px;margin:auto;display:flex;gap:14px;padding:14px}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 18px rgba(0,0,0,.06);padding:20px}
+.left{flex:1;min-width:0}.right{width:340px;flex-shrink:0}
+.qcount{color:#a8824a;font-weight:700;font-size:13px;letter-spacing:.5px;margin-bottom:8px}
+.qtitle{font-size:20px;font-weight:700;line-height:1.4;margin-bottom:16px}
+.opt{border:1.8px solid #e8e2d6;padding:14px 16px;border-radius:12px;margin:10px 0;cursor:pointer;display:flex;gap:10px;transition:.2s}
+.opt:hover{border-color:#c9a86a;background:#fffcf5}
+.opt.sel{background:#122e28;color:#fff;border-color:#122e28}
+.opt.bubble{width:28px;height:28px;border-radius:50%;border:1.5px solid #ccc;display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0}
+.opt.sel.bubble{background:#c9a86a;color:#122e28;border-color:#c9a86a}
+.btn{padding:10px 18px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+.btn-gold{background:linear-gradient(135deg,#c9a86a,#a8824a);color:#122e28}
+.btn-light{background:#f0ebe0;color:#122e28}
+.qbtn{width:42px;height:42px;margin:5px;border-radius:10px;border:1.5px solid #e8e2d6;background:#fff;font-weight:600;cursor:pointer}
+.qbtn.done{background:#122e28;color:#fff;border-color:#122e28}.qbtn.active{outline:3px solid #c9a86a;outline-offset:1px}
+.palette{display:flex;flex-wrap:wrap;margin-top:10px}
+.legend{font-size:12px;color:#666;margin-top:10px;display:flex;gap:12px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+@media(max-width:850px){.wrap{flex-direction:column}.right{width:100%;order:2}.left{order:1}}
 </style></head><body>
-<div id="top"><b>PRT Mock Test</b><div><span id="timer" style="background:#b78a4a;padding:5px 10px;border-radius:20px">150:00</span> <button onclick="submitTest()" style="margin-left:8px">Submit</button></div></div>
-<div id="main"><div id="left"><div id="qcount" style="color:#b78a4a"></div><div id="qbox"></div><div style="margin-top:12px"><button onclick="go(idx-1)">Prev</button> <button onclick="go(idx+1)" style="background:#b78a4a;color:#fff;border:none;padding:8px 14px;border-radius:6px;margin-left:8px">Save & Next</button></div></div>
-<div id="right"><b>150 Questions</b><div id="palette" style="margin-top:10px"></div><div id="result" style="display:none;margin-top:15px"></div></div></div>
+<div class="top"><div style="display:flex;align-items:center;gap:10px"><img src="logo.png" style="width:34px;height:34px;border-radius:50%;background:#fff"><b>ExamYatra PRT Mock</b></div><div style="display:flex;align-items:center;gap:10px"><span class="timer" id="timer">150:00</span><button class="btn btn-gold" onclick="submitTest()">Submit</button></div></div>
+<div class="wrap"><div class="card left"><div class="qcount" id="qcount"></div><div class="qtitle" id="qbox"></div><div style="display:flex;justify-content:space-between;margin-top:20px"><button class="btn btn-light" onclick="go(idx-1)">← Previous</button><button class="btn btn-gold" onclick="go(idx+1)">Save & Next →</button></div></div>
+<div class="card right"><b>Question Palette - 150</b><div class="palette" id="palette"></div><div class="legend"><span><i class="dot" style="background:#122e28"></i> Attempted</span><span><i class="dot" style="background:#e8e2d6"></i> Not Visited</span></div><div id="result" style="display:none;margin-top:18px;padding:16px;background:#f8f5ee;border-radius:12px"></div></div></div>
 <script>
-const qs=[
+const base=[
 {q:"बालक का प्रथम गुरु कौन है?",o:["माता","पिता","शिक्षक","समाज"],a:0},
-{q:"NEP 2020 में 5+3+3+4 क्या है?",o:["नया शैक्षिक ढांचा","पुराना","परीक्षा","कोई नहीं"],a:0},
-{q:"पियाजे की अवस्थाएं कितनी?",o:["4","3","5","6"],a:0},
+{q:"NEP 2020 में 5+3+3+4 क्या दर्शाता है?",o:["नया शैक्षिक ढांचा","पुराना ढांचा","परीक्षा पैटर्न","कोई नहीं"],a:0},
+{q:"पियाजे के अनुसार संज्ञानात्मक विकास की कितनी अवस्थाएं हैं?",o:["4","3","5","6"],a:0},
 {q:"प्रयत्न एवं भूल सिद्धांत किसने दिया?",o:["थार्नडाइक","पावलॉव","स्किनर","कोहलर"],a:0},
-{q:"हिंदी वर्ण कितने?",o:["52","44","33","26"],a:0},
-{q:"पुस्तक का बहुवचन?",o:["पुस्तकें","पुस्तक","पुस्तकों","पुस्तकाएँ"],a:0},
-{q:"Synonym of Happy",o:["Sad","Joyful","Angry","Tired"],a:1},
-{q:"Antonym of Honest",o:["Dishonest","Truthful","Loyal","Kind"],a:0},
-{q:"15 का 20%?",o:["3","5","4","6"],a:0},
-{q:"25x4=?",o:["100","90","110","80"],a:0},
-{q:"भारत की राजधानी?",o:["दिल्ली","मुंबई","कोलकाता","चेन्नई"],a:0},
-{q:"UP की राजधानी?",o:["लखनऊ","कानपुर","आगरा","वाराणसी"],a:0},
-{q:"प्रकाश संश्लेषण कहाँ?",o:["पत्ती","जड़","तना","फूल"],a:0},
-{q:"पानी का सूत्र?",o:["H2O","CO2","O2","N2"],a:0},
-{q:"गंगा कहाँ से निकलती है?",o:["गंगोत्री","यमुनोत्री","अमरनाथ","केदारनाथ"],a:0},
-{q:"संविधान कब लागू?",o:["26 Jan 1950","15 Aug 1947","26 Nov 1949","2 Oct 1950"],a:0},
+{q:"हिंदी वर्णमाला में कुल कितने वर्ण हैं?",o:["52","44","33","26"],a:0},
+{q:"'पुस्तक' का बहुवचन क्या होगा?",o:["पुस्तकें","पुस्तक","पुस्तकों","पुस्तकाएँ"],a:0},
+{q:"Synonym of 'Happy' is:",o:["Sad","Joyful","Angry","Tired"],a:1},
+{q:"Antonym of 'Honest' is:",o:["Dishonest","Truthful","Loyal","Kind"],a:0},
+{q:"15 का 20% कितना होगा?",o:["3","5","4","6"],a:0},
+{q:"25 x 4 =?",o:["100","90","110","80"],a:0},
+{q:"भारत की राजधानी क्या है?",o:["दिल्ली","मुंबई","कोलकाता","चेन्नई"],a:0},
+{q:"UP की राजधानी क्या है?",o:["लखनऊ","कानपुर","आगरा","वाराणसी"],a:0},
+{q:"प्रकाश संश्लेषण कहाँ होता है?",o:["पत्ती","जड़","तना","फूल"],a:0},
+{q:"पानी का रासायनिक सूत्र?",o:["H2O","CO2","O2","N2"],a:0},
+{q:"गंगा नदी कहाँ से निकलती है?",o:["गंगोत्री","यमुनोत्री","अमरनाथ","केदारनाथ"],a:0},
+{q:"भारतीय संविधान कब लागू हुआ?",o:["26 Jan 1950","15 Aug 1947","26 Nov 1949","2 Oct 1950"],a:0},
 {q:"बाल मनोविज्ञान के जनक?",o:["पियाजे","फ्रायड","स्किनर","थार्नडाइक"],a:0},
-{q:"KVS स्थापना?",o:["1963","1965","1970","1980"],a:0},
-{q:"NEP 2020 घोषणा किसने?",o:["भारत सरकार","CBSE","NCERT","UGC"],a:0},
-{q:"RTE में कितने % सीट?",o:["25%","10%","15%","50%"],a:0},
-{q:"स्वर कितने?",o:["11","13","33","52"],a:0},
-{q:"Plural of Child?",o:["Children","Childs","Childes","Childrens"],a:0},
-{q:"12x12=?",o:["144","124","132","156"],a:0},
-{q:"WW1 कब शुरू?",o:["1914","1918","1939","1945"],a:0},
-{q:"सौरमंडल में ग्रह?",o:["8","9","7","10"],a:0}
+{q:"KVS स्थापना कब हुई?",o:["1963","1965","1970","1980"],a:0},
+{q:"NEP 2020 किसने लागू की?",o:["भारत सरकार","CBSE","NCERT","UGC"],a:0},
+{q:"RTE में कितनी % सीट?",o:["25%","10%","15%","50%"],a:0}
 ];
-// 25 ko 150 banao
-let full=[]; for(let i=0;i<150;i++){let b=qs[i%qs.length]; full.push({question:`Q${i+1}: ${b.q}`,options:b.o,answer:b.a})}
+let full=[];for(let i=0;i<150;i++){let b=base[i%base.length];full.push({question:`Q${i+1}. ${b.q}`,options:b.o,answer:b.a})}
 let idx=0,ans={},time=150*60;
-function render(){let h=''; full.forEach((_,i)=>{h+=`<button class="qbtn ${ans[i]!=undefined?'done':''} ${i==idx?'active':''}" onclick="go(${i})">${i+1}</button>`}); document.getElementById('palette').innerHTML=h;}
-function show(){let q=full[idx]; document.getElementById('qcount').innerText=`Question ${idx+1} of ${full.length}`; document.getElementById('qbox').innerHTML=`<h3>${q.question}</h3>`+q.options.map((o,i)=>`<div class="opt ${ans[idx]==i?'sel':''}" onclick="ans[${idx}]=${i};render();show()">${String.fromCharCode(65+i)}. ${o}</div>`).join('');}
-function go(i){if(i>=0&&i<full.length){idx=i;show();render();}}
-setInterval(()=>{time--; let m=Math.floor(time/60),s=time%60; document.getElementById('timer').innerText=`${m}:${s<10?'0':''}${s}`;},1000);
-function submitTest(){let sc=0; full.forEach((q,i)=>{if(ans[i]==q.answer)sc++}); let r=document.getElementById('result'); r.style.display='block'; r.innerHTML=`<h3>Score: ${sc}/${full.length} (${Math.round(sc/full.length*100)}%)</h3><a href="index.html">Home</a>`; window.scrollTo(0,0);}
-render(); show();
+function render(){let h='';full.forEach((_,i)=>{h+=`<button class="qbtn ${ans[i]!=undefined?'done':''} ${i==idx?'active':''}" onclick="go(${i})">${i+1}</button>`});document.getElementById('palette').innerHTML=h}
+function show(){let q=full[idx];document.getElementById('qcount').innerText=`QUESTION ${idx+1} OF ${full.length}`;document.getElementById('qbox').innerHTML=`<div>${q.question}</div>`+q.options.map((o,i)=>`<div class="opt ${ans[idx]==i?'sel':''}" onclick="ans[${idx}]=${i};render();show()"><span class="bubble">${String.fromCharCode(65+i)}</span><span>${o}</span></div>`).join('');}
+function go(i){if(i>=0&&i<full.length){idx=i;show();render();window.scrollTo({top:0,behavior:'smooth'})}}
+setInterval(()=>{time--;let m=Math.floor(time/60),s=time%60;document.getElementById('timer').innerText=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`},1000);
+function submitTest(){let sc=0;full.forEach((q,i)=>{if(ans[i]==q.answer)sc++});let r=document.getElementById('result');r.style.display='block';r.innerHTML=`<h3>Score: ${sc}/${full.length}</h3><p style="margin-top:6px">${Math.round(sc/full.length*100)}% Correct</p><a href="index.html" style="color:#a8824a;font-weight:700">← Back to Home</a>`;}
+render();show();
 </script></body></html>
